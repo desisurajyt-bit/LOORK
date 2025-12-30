@@ -2,22 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZAM Horizontal - Pro Controller v7.1</title>
+    <title>ZAM Horizontal - Pro Controller v7.2 - Fixed Layout</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
         :root { --theme-orange: #ffb700; --theme-white: #ffffff; --text-black: #000000; --text-red: #d20000; --panel-bg: #2b2b2b; }
         body { margin: 0; padding: 20px; font-family: 'Roboto', sans-serif; background: transparent; overflow-x: hidden; }
-        .scoreboard-container { display: flex; flex-direction: column; align-items: center; width: fit-content; margin-left: 50px; margin-top: 20px; }
-        .league-logo-round { width: 60px; height: 60px; background-color: white; border-radius: 50%; border: 3px solid white; background-size: contain; background-repeat: no-repeat; background-position: center; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 5; }
+        
+        .scoreboard-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: fit-content; 
+            margin-left: 50px; 
+            margin-top: 20px; 
+        }
+
+        .league-logo-round { 
+            width: 60px; 
+            height: 60px; 
+            background-color: white; 
+            border-radius: 50%; 
+            border: 3px solid white; 
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            background-position: center; 
+            margin-bottom: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            z-index: 5; 
+        }
+
         .main-wrapper { display: flex; align-items: center; }
-        .timer-box { font-size: 34px; font-weight: 900; padding: 8px 20px; border-top-left-radius: 12px; border-bottom-left-radius: 12px; min-width: 100px; text-align: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); z-index: 2; }
-        .score-bar { display: flex; align-items: center; height: 60px; margin-left: -5px; box-shadow: 4px 4px 10px rgba(0,0,0,0.4); border-radius: 8px; overflow: hidden; }
+
+        /* FIXED WIDTH TIMER BOX: Prevents the scoreboard from moving when extra time starts */
+        .timer-box { 
+            font-size: 34px; 
+            font-weight: 900; 
+            padding: 8px 0; /* Padding left/right removed to rely on fixed width */
+            border-top-left-radius: 12px; 
+            border-bottom-left-radius: 12px; 
+            width: 180px; /* Constant width to keep scoreboard in 1 place */
+            text-align: center; 
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3); 
+            z-index: 2; 
+        }
+
+        .score-bar { 
+            display: flex; 
+            align-items: center; 
+            height: 60px; 
+            margin-left: -5px; 
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.4); 
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+
         .team-section { display: flex; align-items: center; height: 100%; padding: 0 15px; }
         .team-name { font-size: 30px; font-weight: 700; margin: 0 12px; }
         .goals-center { display: flex; align-items: center; background-color: white; height: 100%; padding: 0 12px; border-left: 2px solid #eee; border-right: 2px solid #eee; }
         .score-val { font-size: 42px; font-weight: 900; width: 45px; text-align: center; }
         .score-divider { font-size: 30px; font-weight: 900; color: #333; }
         .flag { width: 50px; height: 33px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
+
+        /* --- CONTROL PANEL --- */
         .controller { background: #2b2b2b; color: white; padding: 20px; border-radius: 10px; width: 950px; margin: 40px auto; border: 1px solid #444; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .control-box { border: 1px solid #444; padding: 12px; border-radius: 6px; background: #333; }
         h3 { margin-top: 0; font-size: 13px; text-transform: uppercase; color: #aaa; border-bottom: 1px solid #555; padding-bottom: 5px; }
@@ -106,15 +152,17 @@
                 let m = Math.floor(totalSecs / 60); 
                 let rs = totalSecs % 60; 
                 let pad = (v) => v < 10 ? "0"+v : v; 
-                let label = pad(m)+":"+pad(rs); 
+                let base = pad(m)+":"+pad(rs); 
                 
-                // Logic for 45+ and 90+
                 if (totalSecs >= 5400) { 
                     label = "90+"+pad(m-90)+":"+pad(rs);
                     if (totalSecs > 7200) label = "FT";
                 } 
                 else if (totalSecs > 2700 && manualStartMinutes < 45) { 
                     label = "45+"+pad(m-45)+":"+pad(rs);
+                }
+                else {
+                    label = base;
                 }
                 
                 document.getElementById('ui-timer').innerText = label; 
